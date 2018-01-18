@@ -3,13 +3,13 @@ library(dplyr)
 library(ggplot2)
 
 # parameters
-nbdata<-15000
+nbdata<-15000     # <------ change this number of data
 nbclasses<- 840
 regions<- seq(0.05, 0.95, 0.1)
 
 # sample function
-sample.probs<- function(nbprobs, min, max) {
-  diff(c(0, min, sort(runif(nbprobs-2, min, max)), max))
+sample.probs<- function(nbprobs, topscore, max) {
+  diff(c(0, topscore, sort(runif(nbprobs-2, topscore, max)), max))
 }
 
 # clip function
@@ -34,11 +34,11 @@ for (id in 1:nbdata) {
 logmodel<- glm(selected~prob, family = binomial, data = bigtbl)
 
 # prediction
-pred.bigtbl<- bigtbl %>% mutate(logodds=predict(logmodel, bigtbl)) %>% mutate(score=sigmoid(logodds)) %>% 
+pred.tbl<- bigtbl %>% mutate(logodds=predict(logmodel, bigtbl)) %>% mutate(score=sigmoid(logodds)) %>% 
   group_by(Id) %>% slice(which.max(score)) %>% ungroup()
 
 # plot
-pred.bigtbl %>% 
+pred.tbl %>% 
   mutate(bin=(as.numeric(cut(score, breaks=seq(0, 1, 0.1)))-0.5)*0.1) %>% 
   group_by(bin) %>%
   summarize(accuracy=mean(selected)) %>% 
