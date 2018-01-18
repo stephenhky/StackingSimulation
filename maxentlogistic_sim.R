@@ -3,7 +3,7 @@ library(dplyr)
 library(ggplot2)
 
 # parameters
-nbdata<-1000
+nbdata<-5000
 nbclasses<- 840
 regions<- seq(0.05, 0.95, 0.1)
 
